@@ -103,3 +103,11 @@ function CompArray{
     }
     return $retlist
 }
+
+Function ExpandAll{
+	# Expand all archives in a given directory
+	param([string]$inPath = $null)
+	$items = Get-ChildItem $inPath | ? {$_.name -like "*.zip"}
+	$items | % { expand-archive -path $($_.name) -DestinationPath ".\$($($_.name).substring(0,$_.name.length -4))"}
+}
+	
