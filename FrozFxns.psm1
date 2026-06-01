@@ -100,6 +100,7 @@ Class IPv4{
         $this.Oct2 = $null
         $this.Oct3 = $null
         $this.Oct4 = $null
+        RETURN [VOID]
     }
 }
 
@@ -164,7 +165,7 @@ function CompArray{
 	"Include: $iwclist" | out-file -filepath $logfile -append
 	"Exclude: $xwclist" | out-file -filepath $logfile -append
 	
-    if (($items -eq $null) -or ($iWClist -eq $null) -or ($xWCList -eq $null))
+    if (($null -eq $items) -or ($null -eq $iWClist) -or ($null -eq $xWCList))
         {$retlist = $null}
     else
     {
