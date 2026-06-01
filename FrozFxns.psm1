@@ -180,3 +180,41 @@ function CompArray{
     }
     return $retlist
 }
+
+Function ExpandAll{
+	# Expand all archives in a given directory
+	param([string]$inPath = $null)
+	$items = Get-ChildItem $inPath | ? {$_.name -like "*.zip"}
+	$items | % { expand-archive -path $($_.name) -DestinationPath ".\$($($_.name).substring(0,$_.name.length -4))"}
+}
+	
+
+Function StdDeviation{
+    # Returns the standard deviation of an array of numbers
+    param([array]$dataSet = $null)
+
+    $decPlaces = 2
+    $decFactor = [math]::Pow(10, $decPlaces)
+    if($dataSet -eq $null){
+        RETURN $null
+    }
+    else {
+        $mean = ($dataSet | Measure-Object -Average).Average
+        $stdDev = [math]::Sqrt( $( $( $dataSet | % { [math]::pow( $([math]::abs( $_ - $mean ) ), 2) }) | measure-object -sum ).sum )
+
+        ## Trunc to DecPlaces above
+        $stdDev = $([math]::Truncate($($stdDev * $decfactor)))/ $decFactor
+        RETURN $stdDev
+    }
+
+    <#      FOR DEBUGGING THIS FUNCTION ONLY
+        [array]$nums = @()
+        for($i=0; $i -le 100; $i++){
+            $nums += get-random -Minimum 1 -Maximum 1000
+        }
+
+        $Calcs = $nums | Measure-Object -Average -Minimum -Maximum
+        stdDeviation -dataSet $nums
+    #>
+
+}
