@@ -13,6 +13,7 @@
 
 .CHANGELOG
     1.0         = [23 Oct 2025] Module created
+    1.5         = [01 Jun 2026] Added StdDeviation function
 
 .USAGE
     Include "Include-module '<path>\FrozFxns.psm1'" near the beginning 
@@ -26,83 +27,6 @@
         they are cited via comments in the code where they are used.
 
 #>
-
-Class IPv4{
-    [int]$Oct1
-    [int]$Oct2
-    [int]$Oct3
-    [int]$Oct4
-
-    IPv4([string]$ipIN){
-        $octets = $ipIN.Split(".")
-        if ($octets.Count -eq 4) {
-            $this.Oct1 = [int]$octets[0]
-            $this.Oct2 = [int]$octets[1]
-            $this.Oct3 = [int]$octets[2]
-            $this.Oct4 = [int]$octets[3]
-        } 
-        else {Write-Error "Invalid IP address format: $ipIN"}
-    }
-    [void]Validate(){
-        $InvalidProps = @()
-        foreach($prop in @("Oct1","Oct2","Oct3","Oct4")){
-            if($this.$prop -lt 0 -or $this.$prop -gt 255){
-                $InvalidProps += $prop
-            }
-        }
-        if ($InvalidProps) {
-            $Message = "Invalid IP address values for properties: $($InvalidProps -join ', ')`nValues must be between 0 and 255."
-            throw $Message
-        }
-    }
-    [string]toBITS(){
-        $bits1 = [Convert]::ToString($this.Oct1, 2).PadLeft(8, '0')
-        $bits2 = [Convert]::ToString($this.Oct2, 2).PadLeft(8, '0')
-        $bits3 = [Convert]::ToString($this.Oct3, 2).PadLeft(8, '0')
-        $bits4 = [Convert]::ToString($this.Oct4, 2).PadLeft(8, '0')
-        return "$bits1 $bits2 $bits3 $bits4"
-    }
-    [string]toString(){return "$($this.Oct1).$($this.Oct2).$($this.Oct3).$($this.Oct4)"}
-    [string]Before([ipv4]$that){
-        if($this.Oct1 -lt $that.Oct1){return $true}
-        elseif($this.Oct1 -eq $that.Oct1){
-            if($this.Oct2 -lt $that.Oct2){return $true}
-            elseif($this.Oct2 -eq $that.Oct2){
-                if($this.Oct3 -lt $that.Oct3){return $true}
-                elseif($this.Oct3 -eq $that.Oct3){
-                    return $($this.Oct4 -lt $that.Oct4)
-                }
-            }
-        }
-        return $false
-    }
-    [string]same([ipv4]$that){
-        return $(($this.Oct1 -eq $that.Oct1) -and `
-                ($this.Oct2 -eq $that.Oct2) -and `
-                ($this.Oct3 -eq $that.Oct3) -and `
-                ($this.Oct4 -eq $that.Oct4))
-    }
-    [string]After([ipv4]$that){
-        if($this.Oct1 -gt $that.Oct1){return $true}
-        elseif($this.Oct1 -eq $that.Oct1){
-            if($this.Oct2 -gt $that.Oct2){return $true}
-            elseif($this.Oct2 -eq $that.Oct2){
-                if($this.Oct3 -gt $that.Oct3){return $true}
-                elseif($this.Oct3 -eq $that.Oct3){
-                    return $($this.Oct4 -gt $that.Oct4)
-                }
-            }
-        }
-        return $false
-    }
-    [string] clear(){
-        $this.Oct1 = $null
-        $this.Oct2 = $null
-        $this.Oct3 = $null
-        $this.Oct4 = $null
-        RETURN [VOID]
-    }
-}
 
 
 Function JustTheName{
