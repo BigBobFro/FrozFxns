@@ -9,12 +9,13 @@
     Author      :   Fro
     Date        :   23 October 2025
     Git         :   https://github.com/BigBobFro/FrozFxns
-    Version     :   1.6
+    Version     :   1.7
 
 .CHANGELOG
     1.0         = [23 Oct 2025] Module created
     1.5         = [01 Jun 2026] Added StdDeviation function
     1.6         = [13 Jun 2026] Added RandomizeAssignment Function
+    1.7         = [12 Aug 2026] Added MathMode Function
 
 .USAGE
     Include "Include-module '<path>\FrozFxns.psm1'" near the beginning 
@@ -113,7 +114,6 @@ Function ExpandAll{
 	$items = Get-ChildItem $inPath | ? {$_.name -like "*.zip"}
 	$items | % { expand-archive -path $($_.name) -DestinationPath ".\$($($_.name).substring(0,$_.name.length -4))"}
 }
-	
 
 Function StdDeviation{
     # Returns the standard deviation of an array of numbers
@@ -143,7 +143,6 @@ Function StdDeviation{
     #>
 
 }
-
 
 Function RandomizeAssignment{
     ## Requires StdDeviation
@@ -246,4 +245,23 @@ Function RandomizeAssignment{
 
 }
 
-
+function MathMode ([array]$ListIn = $null){
+    ## Math Mode: The Mode of a list is the most value that occurs most frequently
+	[array]$MostItem 	= $null
+	[int]$MostCount 	= 0
+	foreach($item in $ListIn){
+		if($MostItem -notcontains $item){
+			$itemCount = $($ListIn|?{$_ -eq $item}).count
+			if($ItemCount -ge $MostCount){
+				if($ItemCount -eq $mostcount){
+					$MostItem += $item
+				}
+				else{
+					$MostCount = $ItemCount
+					$MostItem = $item
+				}
+			}
+		}
+	}
+	RETURN $MostItem
+}
