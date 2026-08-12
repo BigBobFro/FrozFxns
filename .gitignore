@@ -2,5 +2,6 @@
 /musings/
 /musings
 musings.*
+testing*.*          # ignore files used for testing.
 /research/
 /research
