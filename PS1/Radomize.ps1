@@ -79,15 +79,7 @@ Function RandomizeAssignment{
     }
     if($debug){write-host "Max Repeat Counter: $maxrepeatcounter`nTotal Repeats: $totalrepeats`nBreakStuck: $breakstuckcount"}
     RETURN $OutputList
-    <# FOR TESTING AND DEBUGGING THIS FUNCTION
-        
-       
-    #>
-
 }
-
-exit 0
-
 
 
 
