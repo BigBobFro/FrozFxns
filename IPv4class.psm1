@@ -9,7 +9,7 @@
     Author      :   Fro
     Date        :   01 June 2026
     Git         :   https://github.com/BigBobFro
-    Version     :   1.0
+    Version     :   1.2
 
 .CHANGELOG
     1.0         = [01 Jun 2026] Module created
@@ -54,6 +54,12 @@ Class IPv4{
             throw $Message
         }
     }
+    [bool] IsValid(){
+        return $(($this.Oct1 -ge 0 -and $this.Oct1 -le 255) -and `
+                ($this.Oct2 -ge 0 -and $this.Oct2 -le 255) -and `
+                ($this.Oct3 -ge 0 -and $this.Oct3 -le 255) -and `
+                ($this.Oct4 -ge 0 -and $this.Oct4 -le 255))
+    }
     [string] ToBITS(){
         $bits1 = [Convert]::ToString($this.Oct1, 2).PadLeft(8, '0')
         $bits2 = [Convert]::ToString($this.Oct2, 2).PadLeft(8, '0')
@@ -96,6 +102,7 @@ Class IPv4{
     }
     [IPv4] Increment([int]$num){
         $debug = $false
+        if($this.same([ipv4]"255.255.255.255")){ RETURN $null }
         [ipv4]$current = $this
         
         if($debug){ write-host "Current IP: $current | Num: $num" }
@@ -239,3 +246,40 @@ Function TextToList{
     if($debug){ write-host "Stats == Single Hosts: $singleHost | Ranges: $RangeCount" }
     RETURN $outputArray
 }
+
+Function Reduce-IPv4Range {
+    param( [array]$InputList = $null )
+
+    ## Input Validation
+    if($null -eq $inputlist){
+        write-host "Error: Nothing passed.  Nothing to do"
+        return $null
+    }
+    if($inputlist.count -le 0){
+        write-host "Error: Input list is empty"
+        return $null
+    } else {
+        [array]$workingList = @()
+        foreach($item in $inputlist){ ## DataValidation; All items must be valid IPv4 addresses
+            if([ipv4]$item.isvalid()) { $workingList += $item }
+        }
+        if($workingList.count -eq 0) { 
+            write-host "Error: No valid IPv4 addresses found"
+            return $null
+        }
+        
+        ### Sort working list to SortedList
+        $sortedList = $workinglist | sort-Object -Property { $_.Oct1 ,$_.Oct2 ,$_.Oct3,$_.Oct4 }
+
+        foreach($item in $sortedList){
+            if([int]$($item.oct4 / 2) -eq $($item.oct4 / 2)){       ### Even IP
+                if($debug){ write-host "Current IP ($item) is even"}
+                
+                # Check if next IP is in the list
+            }
+        }
+    
+    }
+
+}
+
